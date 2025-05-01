@@ -119,3 +119,48 @@ class Consumer extends Thread {
         }
     }
 }
+//==== Part 5: Main Method ====
+
+public class Project2Combined {
+    public static void main(String[] args) {
+        // === Part 5.1: Simulate Process Threads ===
+        System.out.println("Starting process threads...");
+        ProcessThread[] processes = {
+            new ProcessThread(1, 2), // Process 1 with 2-second burst time
+            new ProcessThread(2, 3), // Process 2 with 3-second burst time
+            new ProcessThread(3, 1)  // Process 3 with 1-second burst time
+        };
+        for (ProcessThread p : processes) {
+            p.start(); // Start each process
+        }
+        for (ProcessThread p : processes) {
+            try {
+                p.join(); // Wait for process to finish
+            } catch (InterruptedException e) {}
+        }
+        System.out.println("Process threads completed.\n");
+
+        // === Part 5.2: Producer-Consumer Simulation ===
+        System.out.println("Starting Producer - Consumer simulation...");
+
+        final int bufferCapacity = 3; // Max buffer size
+        final int itemsToProduce = 5; // Items to produce and consume
+
+        BoundedBuffer buffer = new BoundedBuffer(bufferCapacity);
+
+        Producer producer = new Producer(buffer, itemsToProduce); // Create producer
+        Consumer consumer = new Consumer(buffer, itemsToProduce); // Create consumer
+
+        producer.start(); // Start producer thread
+        consumer.start(); // Start consumer thread
+
+        try {
+            producer.join(); // Wait for producer to finish
+            consumer.join(); // Wait for consumer to finish
+        } catch (InterruptedException e) {
+            System.out.println("Main thread interrupted.");
+        }
+
+        System.out.println("Producer - Consumer simulation completed.");
+    }
+}
