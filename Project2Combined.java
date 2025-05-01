@@ -70,3 +70,52 @@ class BoundedBuffer {
     }
 }
 
+// ==== Part 3: Producer Thread ====
+
+class Producer extends Thread {
+    private final BoundedBuffer buffer;
+    private final int produceCount; // Number of items to produce
+
+    public Producer(BoundedBuffer buffer, int produceCount) {
+        this.buffer = buffer;
+        this.produceCount = produceCount;
+    }
+
+    @Override
+    public void run() {
+        try {
+            for (int i = 0; i < produceCount; i++) {
+                buffer.produce(); // Produce an item
+                Thread.sleep((int)(Math.random() * 1000)); // Random delay
+            }
+            System.out.println("[Producer] Done producing.");
+        } catch (InterruptedException e) {
+            System.out.println("[Producer] Interrupted.");
+        }
+    }
+}
+
+// ==== Part 4: Consumer Thread ====
+
+class Consumer extends Thread {
+    private final BoundedBuffer buffer;
+    private final int consumeCount; // Number of items to consume
+
+    public Consumer(BoundedBuffer buffer, int consumeCount) {
+        this.buffer = buffer;
+        this.consumeCount = consumeCount;
+    }
+
+    @Override
+    public void run() {
+        try {
+            for (int i = 0; i < consumeCount; i++) {
+                buffer.consume(); // Consume an item
+                Thread.sleep((int)(Math.random() * 1500)); // Random delay
+            }
+            System.out.println("[Consumer] Done consuming.");
+        } catch (InterruptedException e) {
+            System.out.println("[Consumer] Interrupted.");
+        }
+    }
+}
